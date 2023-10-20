@@ -1,18 +1,46 @@
 from tkinter import *
 from board import Board
-from menu import MyMenu
 from timer import Timer
 from mine_counter import MineCounter
 from tkinter import messagebox
 
-# main class which will realize whole game
+# menu class:
+
+
+class MyMenu:
+    def __init__(self, app):
+        self.app = app
+        self.menubar = Menu(self.app.window)
+        self.menu = Menu(self.menubar, tearoff=0)
+        self.NewGameMenu = Menu(self.menu, tearoff=0)
+        self.LeaderboardMenu = Menu(self.menu, tearoff=0)
+        self.menu.add_cascade(label='New Game', menu=self.NewGameMenu)
+        self.menu.add_command(label='Restart', command=self.app.restart)
+        self.menu.add_separator()
+        self.menu.add_cascade(label='Leaderboard', menu=self.LeaderboardMenu)
+        self.menubar.add_cascade(label='Game', menu=self.menu)
+        self.NewGameMenu.add_radiobutton(label='Beginner',
+                                              command=self.app.beginner)
+        self.NewGameMenu.add_radiobutton(label='Intermediate',
+                                              command=self.app.intermediate)
+        self.NewGameMenu.add_radiobutton(label='Expert',
+                                              command=self.app.expert)
+        self.LeaderboardMenu.add_command(label='Show Leaderboard',
+                                              command=self.app.show_leaderboard)
+        self.LeaderboardMenu.add_command(label='Clear Leaderboard',
+                                              command=self.app.reset_leaderboard)
+
+
+# main class which will realize whole game:
 
 
 class App:
     def __init__(self):
         self.window = Tk()
-        self.board_frame = Frame(self.window, relief=SUNKEN)  # frame for board
-        self.upper_frame = Frame(self.window, relief=SUNKEN)  # frame for time and mines
+        # frame for board
+        self.board_frame = Frame(self.window, relief=SUNKEN)
+        # frame for time and mines
+        self.upper_frame = Frame(self.window, relief=SUNKEN)
         self.upper_frame.pack()
         self.board_frame.pack()
         # by default level will be expert
@@ -21,19 +49,8 @@ class App:
         self.space_label.grid(row=0, column=1)
         self.timer = Timer(self.upper_frame)
         self.board = Board(30, 480, 99, self.board_frame, self.timer, self.mine_counter)
-        self.menu = MyMenu(self.window)
+        self.menu = MyMenu(self)
         self.window.config(menu=self.menu.menubar)
-        self.menu.menu.add_command(label='Restart', command=self.restart)
-        self.menu.NewGameMenu.add_radiobutton(label='Beginner',
-                                              command=self.beginner)
-        self.menu.NewGameMenu.add_radiobutton(label='Intermediate',
-                                              command=self.intermediate)
-        self.menu.NewGameMenu.add_radiobutton(label='Expert',
-                                              command=self.expert)
-        self.menu.LeaderboardMenu.add_command(label='Show Leaderboard',
-                                              command=self.show_leaderboard)
-        self.menu.LeaderboardMenu.add_command(label='Clear Leaderboard',
-                                              command=self.reset_leaderboard)
         self.window.mainloop()
 
 # commands to crete new game on certain levels
